@@ -25,11 +25,15 @@ async function collapseTransactions(path: string) {
 	return users;
 }
 
-async function main() {
-	logger.log("Starting support bank");
-	const [filename] = getCommandLineArguments(1);
+async function startBank(filename: string) {
 	const users = await collapseTransactions(filename);
 	mainMenu(users);
+}
+
+function main() {
+	logger.log("Starting support bank");
+	const [filename] = getCommandLineArguments(1);
+	startBank(filename);
 }
 
 main();
