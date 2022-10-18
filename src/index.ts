@@ -1,7 +1,7 @@
-import { parseTransactionsCSV, parseUsers } from "./csv";
 import { mainMenu } from "./menu";
 import { getCommandLineArguments } from "./userInput";
 import log4js from "log4js";
+import { Parser } from "./parser/Parser";
 
 log4js.configure({
 	appenders: {
@@ -14,9 +14,9 @@ log4js.configure({
 
 const logger = log4js.getLogger("<index.ts>");
 
-async function collapseTransactions(path: string) {
-	const transactions = await parseTransactionsCSV(path);
-	const users = parseUsers(transactions);
+async function getUserAccounts(path: string) {
+	const parser = Parser.getParser(path);
+	const { users, transactions } = await parser.parse();
 
 	transactions.forEach((transaction) => {
 		users[transaction.from].handleTransaction(transaction);
@@ -27,7 +27,7 @@ async function collapseTransactions(path: string) {
 }
 
 async function startBank(filename: string) {
-	const users = await collapseTransactions(filename);
+	const users = await getUserAccounts(filename);
 	mainMenu(users);
 }
 
