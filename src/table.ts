@@ -4,22 +4,7 @@ export class Table<T> {
 		private data: T[]
 	) {}
 
-	getMaxLength(originalList: string[]) {
-		if (originalList.length < 0) {
-			return 0;
-		}
-
-		const list = [...originalList];
-
-		return list.sort((a, b) => b.length - a.length)[0].length;
-	}
-
-	getMaxLengthsOfColumn(col: keyof T) {
-		const values = this.data.map((record) => String(record[col]));
-		return this.getMaxLength([...values, this.labels[col]]);
-	}
-
-	printTable() {
+	public printTable() {
 		const maxLengths = Object.keys(this.labels).reduce((acc, col) => {
 			acc[col] = this.getMaxLengthsOfColumn(col as keyof T);
 			return acc;
@@ -37,5 +22,20 @@ export class Table<T> {
 				.join(" | ");
 			console.log(row);
 		});
+	}
+
+	private getMaxLength(originalList: string[]) {
+		if (originalList.length < 0) {
+			return 0;
+		}
+
+		const list = [...originalList];
+
+		return list.sort((a, b) => b.length - a.length)[0].length;
+	}
+
+	private getMaxLengthsOfColumn(col: keyof T) {
+		const values = this.data.map((record) => String(record[col]));
+		return this.getMaxLength([...values, this.labels[col]]);
 	}
 }
