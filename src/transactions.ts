@@ -1,5 +1,8 @@
+import { CastingContext } from "csv-parse/.";
 import { DateTime } from "luxon";
-import { TransactionCSVRecord } from "./csv";
+import log4js from "log4js";
+
+const logger = log4js.getLogger("<transactions.ts>");
 
 export class Transaction {
 	public get date() {
@@ -30,14 +33,26 @@ export class Transaction {
 		private _amount: number
 	) {}
 
-	static fromTransactionRecord(record: TransactionCSVRecord) {
+	static createTransactionFromRecord(
+		record: { [col: string]: string },
+		context: CastingContext
+	): Transaction {
 		const date = DateTime.fromFormat(record.Date, "dd/mm/yyyy");
-		return new Transaction(
-			date,
-			record.From,
-			record.To,
-			record.Narrative,
-			record.Amount
-		);
+		const from = record.From;
+		const to = record.To;
+		const narrative = record.Narrative;
+		const amount = parseFloat(record.Amount);
+
+		if (date.invalidReason) {
+			logger.error(
+				`The date in line ${context.lines} is invalid: ${date.invalidExplanation}`
+			);
+		}
+
+		if (Number.isNaN(amount)) {
+			logger.error(`The amount in line ${context.lines} is not a number`);
+		}
+
+		return new Transaction(date, from, to, narrative, amount);
 	}
 }

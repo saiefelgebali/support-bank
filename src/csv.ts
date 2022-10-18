@@ -1,49 +1,49 @@
 import fs from "fs";
-import { parse } from "csv-parse/sync";
+import { parse } from "csv-parse";
 import { UserAccount, UserAccountStore } from "./users";
 import { Transaction } from "./transactions";
+import log4js from "log4js";
 
-export interface TransactionCSVRecord {
-	Date: string;
-	From: string;
-	To: string;
-	Narrative: string;
-	Amount: number;
-}
+const logger = log4js.getLogger("<csv.ts>");
 
 interface ParsedTransactionCSV {
 	users: UserAccountStore;
 	transactions: Transaction[];
 }
 
-export function parseTransactionsCSV(path: string): ParsedTransactionCSV {
+export async function parseTransactionsCSV(
+	path: string
+): Promise<ParsedTransactionCSV> {
+	logger.log("Starting to parse csv file");
+
 	const csv = fs.readFileSync(path).toString();
 
-	const records = parse(csv, {
+	const parser = parse(csv, {
 		columns: true,
-		skip_empty_lines: true,
-		cast: true,
-	}) as TransactionCSVRecord[];
+		onRecord: Transaction.createTransactionFromRecord,
+	});
+
+	const transactions: Transaction[] = [];
+
+	for await (const transaction of parser) {
+		transactions.push(transaction);
+	}
 
 	return {
-		users: parseUsers(records),
-		transactions: parseTransactions(records),
+		users: parseUsers(transactions),
+		transactions,
 	};
 }
 
-function parseTransactions(records: TransactionCSVRecord[]): Transaction[] {
-	return records.map((record) => Transaction.fromTransactionRecord(record));
-}
-
-function parseUsers(records: TransactionCSVRecord[]): UserAccountStore {
+function parseUsers(records: Transaction[]): UserAccountStore {
 	const users: { [name: string]: UserAccount } = {};
 
 	records.forEach((record) => {
-		if (!(record.From in users)) {
-			users[record.From] = new UserAccount(record.From);
+		if (!(record.from in users)) {
+			users[record.from] = new UserAccount(record.from);
 		}
-		if (!(record.To in users)) {
-			users[record.To] = new UserAccount(record.To);
+		if (!(record.to in users)) {
+			users[record.to] = new UserAccount(record.to);
 		}
 	});
 

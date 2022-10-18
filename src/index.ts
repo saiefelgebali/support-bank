@@ -1,9 +1,21 @@
 import { parseTransactionsCSV } from "./csv";
 import { mainMenu } from "./menu";
 import { getCommandLineArguments } from "./userInput";
+import log4js from "log4js";
 
-function collapseTransactions(path: string) {
-	const { users, transactions } = parseTransactionsCSV(path);
+log4js.configure({
+	appenders: {
+		file: { type: "fileSync", filename: "logs/debug.log" },
+	},
+	categories: {
+		default: { appenders: ["file"], level: "debug" },
+	},
+});
+
+const logger = log4js.getLogger("<index.ts>");
+
+async function collapseTransactions(path: string) {
+	const { users, transactions } = await parseTransactionsCSV(path);
 
 	transactions.forEach((transaction) => {
 		users[transaction.from].handleTransaction(transaction);
@@ -13,9 +25,10 @@ function collapseTransactions(path: string) {
 	return users;
 }
 
-function main() {
+async function main() {
+	logger.log("Starting support bank");
 	const [filename] = getCommandLineArguments(1);
-	const users = collapseTransactions(filename);
+	const users = await collapseTransactions(filename);
 	mainMenu(users);
 }
 
