@@ -2,7 +2,7 @@ import { UserAccountStore } from "./users";
 import { Table } from "./table";
 
 export function listAll(users: UserAccountStore): void {
-	const userList = Object.values(users).map((user) => ({
+	const data = Object.values(users).map((user) => ({
 		name: user.name,
 		balance: `${user.balance.toFixed(2)}`,
 	}));
@@ -12,7 +12,27 @@ export function listAll(users: UserAccountStore): void {
 		balance: "Balance (£)",
 	};
 
-	const table = new Table(headers, userList);
+	const table = new Table(headers, data);
+
+	table.printTable();
+}
+
+export function listUserTransactions(name: string, users: UserAccountStore) {
+	const user = users[name];
+
+	const headers = {
+		amount: "Amount",
+		date: "Date",
+		narrative: "Narrative",
+	};
+
+	const data = user.transactions.map((transaction) => ({
+		amount: `£${transaction.amount.toFixed(2)}`,
+		date: transaction.date.toFormat("dd/mm/yyyy"),
+		narrative: transaction.narrative,
+	}));
+
+	const table = new Table(headers, data);
 
 	table.printTable();
 }

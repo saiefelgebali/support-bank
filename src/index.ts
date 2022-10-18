@@ -1,7 +1,5 @@
 import { parseTransactionsCSV } from "./csv";
-import { listAll } from "./list";
-import { Transaction } from "./transactions";
-import { UserAccountStore } from "./users";
+import { listAll, listUserTransactions } from "./list";
 
 function collapseTransactions(path: string) {
 	const { users, transactions } = parseTransactionsCSV(path);
@@ -14,20 +12,14 @@ function collapseTransactions(path: string) {
 	return { users, transactions };
 }
 
-function listUserTransactions(
-	name: string,
-	users: UserAccountStore,
-	transactions: Transaction[]
-) {
-	const user = users[name];
-}
-
 function main() {
 	const { users, transactions } = collapseTransactions(
 		"./examples/Transactions2014.csv"
 	);
 
 	listAll(users);
+
+	listUserTransactions("Sam N", users);
 }
 
 main();
