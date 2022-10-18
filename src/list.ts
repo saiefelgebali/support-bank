@@ -2,15 +2,15 @@ import { UserAccount, UserAccountStore } from "./users";
 import { Table } from "./table";
 
 export function listAll(users: UserAccountStore): void {
-	const data = Object.values(users).map((user) => ({
-		name: user.name,
-		balance: `${user.balance.toFixed(2)}`,
-	}));
-
 	const headers = {
 		name: "Name",
 		balance: "Balance (£)",
 	};
+
+	const data = Object.values(users).map((user) => ({
+		name: user.name,
+		balance: `${user.balance.toFixed(2)}`,
+	}));
 
 	const table = new Table(headers, data);
 
