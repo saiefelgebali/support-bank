@@ -1,5 +1,6 @@
 import { parseTransactionsCSV } from "./csv";
 import { mainMenu } from "./menu";
+import { getCommandLineArguments } from "./userInput";
 
 function collapseTransactions(path: string) {
 	const { users, transactions } = parseTransactionsCSV(path);
@@ -13,7 +14,8 @@ function collapseTransactions(path: string) {
 }
 
 function main() {
-	const users = collapseTransactions("./examples/Transactions2014.csv");
+	const [filename] = getCommandLineArguments(1);
+	const users = collapseTransactions(filename);
 	mainMenu(users);
 }
 

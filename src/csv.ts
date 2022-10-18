@@ -17,7 +17,7 @@ interface ParsedTransactionCSV {
 }
 
 export function parseTransactionsCSV(path: string): ParsedTransactionCSV {
-	const csv = fs.readFileSync("./examples/Transactions2014.csv").toString();
+	const csv = fs.readFileSync(path).toString();
 
 	const records = parse(csv, {
 		columns: true,

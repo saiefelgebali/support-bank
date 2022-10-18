@@ -13,3 +13,11 @@ export function getString(message: string, options?: string[]) {
 
 	return inputString;
 }
+
+export function getCommandLineArguments(n): string[] {
+	const args = process.argv.slice(2);
+	if (args.length < n) {
+		throw "Missing command line arguments";
+	}
+	return args;
+}
