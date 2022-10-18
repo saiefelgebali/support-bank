@@ -1,5 +1,5 @@
 import { UserAccount } from "./UserAccount";
-import { Table } from "./table";
+import { Table } from "./Table";
 import type { UserAccountStore } from "./UserAccountStore.interface";
 
 export function listAll(users: UserAccountStore): void {
