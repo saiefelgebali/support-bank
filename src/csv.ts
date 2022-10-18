@@ -1,26 +1,44 @@
 import fs from "fs";
-import { parse } from "csv-parse";
-import { UserAccount, UserAccountStore } from "./users";
-import { Transaction } from "./transactions";
+import { CastingContext, parse } from "csv-parse";
+import { DateTime } from "luxon";
+import { UserAccount } from "./UserAccount";
+import { Transaction } from "./Transaction";
 import log4js from "log4js";
+import type { UserAccountStore } from "./UserAccountStore.interface";
 
 const logger = log4js.getLogger("<csv.ts>");
 
-interface ParsedTransactionCSV {
-	users: UserAccountStore;
-	transactions: Transaction[];
+function createTransactionFromCSV(
+	record: { [col: string]: string },
+	context: CastingContext
+): Transaction {
+	const date = DateTime.fromFormat(record.Date, "dd/mm/yyyy");
+	const from = record.From;
+	const to = record.To;
+	const narrative = record.Narrative;
+	const amount = parseFloat(record.Amount);
+
+	if (date.invalidReason) {
+		logger.error(
+			`The date in line ${context.lines} is invalid: ${date.invalidExplanation}`
+		);
+	}
+
+	if (Number.isNaN(amount)) {
+		logger.error(`The amount in line ${context.lines} is not a number`);
+	}
+
+	return new Transaction(date, from, to, narrative, amount);
 }
 
-export async function parseTransactionsCSV(
-	path: string
-): Promise<ParsedTransactionCSV> {
+export async function parseTransactionsCSV(path: string) {
 	logger.log("Starting to parse csv file");
 
 	const csv = fs.readFileSync(path).toString();
 
 	const parser = parse(csv, {
 		columns: true,
-		onRecord: Transaction.createTransactionFromRecord,
+		onRecord: createTransactionFromCSV,
 	});
 
 	const transactions: Transaction[] = [];
@@ -29,13 +47,10 @@ export async function parseTransactionsCSV(
 		transactions.push(transaction);
 	}
 
-	return {
-		users: parseUsers(transactions),
-		transactions,
-	};
+	return transactions;
 }
 
-function parseUsers(records: Transaction[]): UserAccountStore {
+export function parseUsers(records: Transaction[]): UserAccountStore {
 	const users: { [name: string]: UserAccount } = {};
 
 	records.forEach((record) => {

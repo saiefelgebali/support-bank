@@ -1,4 +1,4 @@
-import { parseTransactionsCSV } from "./csv";
+import { parseTransactionsCSV, parseUsers } from "./csv";
 import { mainMenu } from "./menu";
 import { getCommandLineArguments } from "./userInput";
 import log4js from "log4js";
@@ -15,7 +15,8 @@ log4js.configure({
 const logger = log4js.getLogger("<index.ts>");
 
 async function collapseTransactions(path: string) {
-	const { users, transactions } = await parseTransactionsCSV(path);
+	const transactions = await parseTransactionsCSV(path);
+	const users = parseUsers(transactions);
 
 	transactions.forEach((transaction) => {
 		users[transaction.from].handleTransaction(transaction);

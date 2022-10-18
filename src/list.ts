@@ -1,5 +1,6 @@
-import { UserAccount, UserAccountStore } from "./users";
+import { UserAccount } from "./UserAccount";
 import { Table } from "./table";
+import type { UserAccountStore } from "./UserAccountStore.interface";
 
 export function listAll(users: UserAccountStore): void {
 	const headers = {

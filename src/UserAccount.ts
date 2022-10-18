@@ -1,8 +1,4 @@
-import { Transaction } from "./transactions";
-
-export interface UserAccountStore {
-	[name: string]: UserAccount;
-}
+import { Transaction } from "./Transaction";
 
 export class UserAccount {
 	public get name() {

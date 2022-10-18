@@ -1,6 +1,6 @@
 import { listAll, listUserTransactions } from "./list";
 import { getString } from "./userInput";
-import { UserAccountStore } from "./users";
+import type { UserAccountStore } from "./UserAccountStore.interface";
 
 function listUserMenu(users: UserAccountStore) {
 	const username = getString("Enter user name: ");
