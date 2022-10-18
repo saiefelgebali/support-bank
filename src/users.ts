@@ -3,11 +3,16 @@ export interface UserAccountStore {
 }
 
 export class UserAccount {
-	name: string;
-	balance: number;
+	public get name() {
+		return this._name;
+	}
+	public get balance() {
+		return this._balance;
+	}
 
-	constructor(name: string) {
-		this.name = name;
-		this.balance = 0;
+	private _balance: number;
+
+	constructor(private _name: string) {
+		this._balance = 0;
 	}
 }
