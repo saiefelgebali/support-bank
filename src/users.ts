@@ -11,11 +11,16 @@ export class UserAccount {
 	public get balance() {
 		return this._balance;
 	}
+	public get transactions() {
+		return [...this._transactions];
+	}
 
 	private _balance: number;
+	private _transactions: Transaction[];
 
 	constructor(private _name: string) {
 		this._balance = 0;
+		this._transactions = [];
 	}
 
 	addBalance(number: number) {
@@ -26,7 +31,17 @@ export class UserAccount {
 		this._balance -= number;
 	}
 
+	addTransaction(transaction: Transaction) {
+		this._transactions.push(transaction);
+	}
+
 	handleTransaction(transaction: Transaction) {
+		if (![transaction.from, transaction.to].includes(this.name)) {
+			return;
+		}
+
+		this.addTransaction(transaction);
+
 		if (transaction.from === this.name) {
 			this.removeBalance(transaction.amount);
 		}
