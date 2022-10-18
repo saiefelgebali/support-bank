@@ -1,6 +1,7 @@
 import { parseTransactionsCSV } from "./csv";
 import { listAll, listUserTransactions } from "./list";
-import readlineSync from "readline-sync";
+import { getString } from "./userInput";
+import { UserAccountStore } from "./users";
 
 function collapseTransactions(path: string) {
 	const { users, transactions } = parseTransactionsCSV(path);
@@ -13,26 +14,20 @@ function collapseTransactions(path: string) {
 	return users;
 }
 
-function getString(message: string, options?: string[]) {
-	const inputString = readlineSync.question(message);
-
-	const validOption = !!options?.find((o) =>
-		inputString.toLowerCase().startsWith(o.toLowerCase())
-	);
-
-	if (options && !validOption) {
-		return getString(message, options);
+function listUserMenu(users: UserAccountStore) {
+	const username = getString("Enter user name: ");
+	if (!(username in users)) {
+		return listUserMenu(users);
 	}
 
-	return inputString;
+	const user = users[username];
+	listUserTransactions(user);
 }
 
-function main() {
-	const users = collapseTransactions("./examples/Transactions2014.csv");
-
+function mainMenu(users: UserAccountStore) {
 	const option = getString(
 		"Enter (a) to list al users, or (u) to list a specific user: ",
-		["a", "u"]
+		["a", "u", "q"]
 	);
 
 	switch (option) {
@@ -40,11 +35,18 @@ function main() {
 			listAll(users);
 			break;
 		case "u":
-			const username = getString("Enter user name: ");
-			const user = users[username];
-			listUserTransactions(user);
+			listUserMenu(users);
 			break;
+		case "q":
+			return;
 	}
+
+	mainMenu(users);
+}
+
+function main() {
+	const users = collapseTransactions("./examples/Transactions2014.csv");
+	mainMenu(users);
 }
 
 main();
