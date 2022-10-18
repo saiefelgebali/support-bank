@@ -1,4 +1,4 @@
-import { UserAccountStore } from "./users";
+import { UserAccount, UserAccountStore } from "./users";
 import { Table } from "./table";
 
 export function listAll(users: UserAccountStore): void {
@@ -17,9 +17,7 @@ export function listAll(users: UserAccountStore): void {
 	table.printTable();
 }
 
-export function listUserTransactions(name: string, users: UserAccountStore) {
-	const user = users[name];
-
+export function listUserTransactions(user: UserAccount) {
 	const headers = {
 		amount: "Amount",
 		date: "Date",
