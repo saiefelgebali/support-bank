@@ -1,16 +1,18 @@
 import { parseTransactionsCSV } from "./csv";
 
-function collapseTransactions() {
-	const { transactions, users } = parseTransactionsCSV(
-		"./examples/Transactions2014.csv"
-	);
+function collapseTransactions(path: string) {
+	const { transactions, users } = parseTransactionsCSV(path);
 
 	transactions.forEach((transaction) => {
 		users[transaction.from].handleTransaction(transaction);
 		users[transaction.to].handleTransaction(transaction);
 	});
 
-	console.log(users);
+	return { transactions, users };
 }
 
-collapseTransactions();
+function main() {
+	collapseTransactions("./examples/Transactions2014.csv");
+}
+
+main();
