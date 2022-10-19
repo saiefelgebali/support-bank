@@ -28,8 +28,8 @@ export class TransactionParserXML extends TransactionParser {
 
 		const data = parser.parse(this.text);
 
-		return data.TransactionList.SupportTransaction.map(
-			this.createTransaction
+		return data.TransactionList.SupportTransaction.map((data) =>
+			this.createTransaction(data)
 		);
 	}
 
@@ -41,7 +41,8 @@ export class TransactionParserXML extends TransactionParser {
 	}
 
 	private createTransaction(data: XMLTransaction): Transaction {
-		const date = DateTime.fromJSDate(this.fromOADate(parseInt(data.Date)));
+		const jsDate = this.fromOADate(parseInt(data.Date));
+		const date = DateTime.fromJSDate(jsDate);
 
 		return new Transaction(
 			date,
