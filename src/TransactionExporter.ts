@@ -12,9 +12,19 @@ export class TransactionExporter {
 			transactions.map((data) => this.transactionToJson(data))
 		);
 
-		logger.log(`Writing to file: ${fs.realpath(path)}`);
+		logger.log(`Writing to file: ${path}`);
 
-		fs.writeFileSync(path, text);
+		try {
+			fs.writeFileSync(path, text);
+
+			logger.log(
+				`Exported transactions successfully to: ${fs.realpathSync(
+					path
+				)}`
+			);
+		} catch (err) {
+			logger.error(err);
+		}
 	}
 
 	private static transactionToJson(transaction: Transaction) {

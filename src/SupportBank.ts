@@ -1,6 +1,8 @@
 import log4js from "log4js";
 import { listAll, listUserTransactions } from "./list";
 import { Parser } from "./parser/Parser";
+import { Transaction } from "./Transaction";
+import { TransactionExporter } from "./TransactionExporter";
 import { UserAccountStore } from "./UserAccountStore.interface";
 import { getString } from "./userInput";
 
@@ -8,6 +10,7 @@ const logger = log4js.getLogger("<Bank.ts>");
 
 export class SupportBank {
 	private users: UserAccountStore;
+	private transactions: Transaction[];
 
 	constructor() {
 		logger.log("Initialize Support Bank");
@@ -17,28 +20,28 @@ export class SupportBank {
 		this.mainMenu();
 	}
 
-	public async readFromFile(filename: string) {
-		logger.log("Getting users from file");
-		this.users = await this.getUserAccounts(filename);
-		logger.log(`Parsed ${Object.keys(this.users).length} users`);
-	}
+	public async readFromFile(path: string) {
+		logger.log(`Reading data from file: ${path}`);
 
-	private async getUserAccounts(path: string) {
 		const parser = Parser.getParser(path);
 		const { users, transactions } = await parser.parse();
+
+		logger.log(`Parsed ${Object.keys(users).length} users`);
+		logger.log(`Parsed ${transactions.length} transactions`);
 
 		transactions.forEach((transaction) => {
 			users[transaction.from].handleTransaction(transaction);
 			users[transaction.to].handleTransaction(transaction);
 		});
 
-		return users;
+		this.users = users;
+		this.transactions = transactions;
 	}
 
 	private mainMenu() {
 		const option = getString(
-			"Enter (a) to list al users, or (u) to list a specific user: ",
-			["a", "u", "q"]
+			"Enter (a) to list all users, or (u) to list a specific user, or (e) to export transactions: ",
+			["a", "u", "e", "q"]
 		);
 
 		switch (option) {
@@ -47,6 +50,9 @@ export class SupportBank {
 				break;
 			case "u":
 				this.listUserMenu();
+				break;
+			case "e":
+				this.exportTransactionsMenu();
 				break;
 			case "q":
 				return;
@@ -63,5 +69,10 @@ export class SupportBank {
 		}
 
 		listUserTransactions(this.users[username]);
+	}
+
+	private exportTransactionsMenu() {
+		const path = getString("Enter save path: ");
+		TransactionExporter.export(this.transactions, path);
 	}
 }
