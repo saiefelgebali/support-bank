@@ -20,9 +20,6 @@ export class TransactionParserJSON extends TransactionParser {
 
 	private createTransaction(data: any, i: number): Transaction {
 		const date = DateTime.fromISO(data.Date);
-		const from = data.FromAccount;
-		const to = data.ToAccount;
-		const narrative = data.Narrative;
 		const amount = data.Amount;
 
 		if (date.invalidReason) {
@@ -35,6 +32,12 @@ export class TransactionParserJSON extends TransactionParser {
 			logger.error(`The amount in entry ${i} is not a number`);
 		}
 
-		return new Transaction(date, from, to, narrative, amount);
+		return new Transaction(
+			date,
+			data.FromAccount,
+			data.ToAccount,
+			data.Narrative,
+			amount
+		);
 	}
 }

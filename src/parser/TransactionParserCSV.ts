@@ -25,9 +25,6 @@ export class TransactionParserCSV extends TransactionParser {
 		context: CastingContext
 	): Transaction {
 		const date = DateTime.fromFormat(record.Date, "dd/mm/yyyy");
-		const from = record.From;
-		const to = record.To;
-		const narrative = record.Narrative;
 		const amount = parseFloat(record.Amount);
 
 		if (date.invalidReason) {
@@ -40,6 +37,12 @@ export class TransactionParserCSV extends TransactionParser {
 			logger.error(`The amount in line ${context.lines} is not a number`);
 		}
 
-		return new Transaction(date, from, to, narrative, amount);
+		return new Transaction(
+			date,
+			record.From,
+			record.To,
+			record.Narrative,
+			amount
+		);
 	}
 }
