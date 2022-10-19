@@ -25,7 +25,7 @@ export function listUserTransactions(user: UserAccount) {
 		narrative: "Narrative",
 	};
 
-	const data = user.transactions.map((transaction) => ({
+	const data = user.getTransactions().map((transaction) => ({
 		amount: `£${transaction.amount.toFixed(2)}`,
 		date: transaction.date.toFormat("dd/mm/yyyy"),
 		narrative: transaction.narrative,

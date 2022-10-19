@@ -1,16 +1,8 @@
+import log4js from "log4js";
 import { mainMenu } from "./menu";
 import { getCommandLineArguments } from "./userInput";
-import log4js from "log4js";
 import { Parser } from "./parser/Parser";
-
-log4js.configure({
-	appenders: {
-		file: { type: "fileSync", filename: "logs/debug.log" },
-	},
-	categories: {
-		default: { appenders: ["file"], level: "debug" },
-	},
-});
+import "./logger";
 
 const logger = log4js.getLogger("<index.ts>");
 

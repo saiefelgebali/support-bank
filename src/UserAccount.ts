@@ -1,37 +1,29 @@
 import { Transaction } from "./Transaction";
 
 export class UserAccount {
-	public get name() {
-		return this._name;
-	}
-	public get balance() {
-		return this._balance;
-	}
-	public get transactions() {
-		return [...this._transactions];
+	public name: string;
+	public balance: number;
+	private transactions: Transaction[];
+
+	constructor(name: string) {
+		this.name = name;
+		this.balance = 0;
+		this.transactions = [];
 	}
 
-	private _balance: number;
-	private _transactions: Transaction[];
-
-	constructor(private _name: string) {
-		this._balance = 0;
-		this._transactions = [];
+	public getTransactions() {
+		return [...this.transactions];
 	}
 
-	addBalance(number: number) {
-		this._balance += number;
+	public addBalance(number: number) {
+		this.balance += number;
 	}
 
-	removeBalance(number: number) {
-		this._balance -= number;
+	public removeBalance(number: number) {
+		this.balance -= number;
 	}
 
-	addTransaction(transaction: Transaction) {
-		this._transactions.push(transaction);
-	}
-
-	handleTransaction(transaction: Transaction) {
+	public handleTransaction(transaction: Transaction) {
 		if (![transaction.from, transaction.to].includes(this.name)) {
 			return;
 		}
@@ -45,5 +37,9 @@ export class UserAccount {
 		if (transaction.to === this.name) {
 			this.addBalance(transaction.amount);
 		}
+	}
+
+	private addTransaction(transaction: Transaction) {
+		this.transactions.push(transaction);
 	}
 }

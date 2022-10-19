@@ -1,4 +1,3 @@
-import fs from "fs";
 import log4js from "log4js";
 import { Transaction } from "../Transaction";
 import { UserAccount } from "../UserAccount";

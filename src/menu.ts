@@ -4,12 +4,12 @@ import type { UserAccountStore } from "./UserAccountStore.interface";
 
 function listUserMenu(users: UserAccountStore) {
 	const username = getString("Enter user name: ");
+
 	if (!(username in users)) {
-		return listUserMenu(users);
+		return;
 	}
 
-	const user = users[username];
-	listUserTransactions(user);
+	listUserTransactions(users[username]);
 }
 
 export function mainMenu(users: UserAccountStore) {
