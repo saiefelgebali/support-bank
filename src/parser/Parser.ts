@@ -2,7 +2,7 @@ import fs from "fs";
 import log4js from "log4js";
 import { TransactionParser } from "./TransactionParser";
 import { TransactionParserCSV } from "./TransactionParserCSV";
-import { TransactionParserJSON } from "./TransactionParserJson";
+import { TransactionParserJSON } from "./TransactionParserJSON";
 
 const logger = log4js.getLogger("<TransactionParser.ts>");
 
