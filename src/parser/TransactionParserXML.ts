@@ -35,8 +35,8 @@ export class TransactionParserXML extends TransactionParser {
 
 	// https://github.com/markitondemand/moment-msdate/blob/master/moment-msdate.js
 	private fromOADate(oadate: number) {
-		var date = new Date((oadate - 25569) * 86400000);
-		var tz = date.getTimezoneOffset();
+		const date = new Date((oadate - 25569) * 86400000);
+		const tz = date.getTimezoneOffset();
 		return new Date((oadate - 25569 + tz / (60 * 24)) * 86400000);
 	}
 
