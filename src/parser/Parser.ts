@@ -3,12 +3,14 @@ import log4js from "log4js";
 import { TransactionParser } from "./TransactionParser";
 import { TransactionParserCSV } from "./TransactionParserCSV";
 import { TransactionParserJSON } from "./TransactionParserJSON";
+import { TransactionParserXML } from "./TransactionParserXML";
 
 const logger = log4js.getLogger("<TransactionParser.ts>");
 
 enum FileType {
 	json = "json",
 	csv = "csv",
+	xml = "xml",
 }
 
 export class Parser {
@@ -20,6 +22,8 @@ export class Parser {
 				return new TransactionParserJSON(text);
 			case FileType.csv:
 				return new TransactionParserCSV(text);
+			case FileType.xml:
+				return new TransactionParserXML(text);
 		}
 	}
 
