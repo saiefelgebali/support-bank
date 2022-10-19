@@ -2,6 +2,7 @@ import log4js from "log4js";
 import { DateTime } from "luxon";
 import { TransactionParser } from "./TransactionParser";
 import { Transaction } from "../Transaction";
+import Decimal from "decimal.js";
 
 const logger = log4js.getLogger("<TransactionParserJSON.ts>");
 
@@ -20,7 +21,7 @@ export class TransactionParserJSON extends TransactionParser {
 
 	private createTransaction(data: any, i: number): Transaction {
 		const date = DateTime.fromISO(data.Date);
-		const amount = data.Amount;
+		const amount = this.formatAmount(data.Amount);
 
 		if (date.invalidReason) {
 			logger.error(
@@ -28,8 +29,10 @@ export class TransactionParserJSON extends TransactionParser {
 			);
 		}
 
-		if (Number.isNaN(amount)) {
-			logger.error(`The amount in entry ${i} is not a number`);
+		if (!Decimal.isDecimal(amount)) {
+			logger.error(
+				`The amount in entry ${i} invalid: ${data.Amount} is not a number`
+			);
 		}
 
 		return new Transaction(

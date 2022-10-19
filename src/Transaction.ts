@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import Decimal from "decimal.js";
 
 export class Transaction {
 	constructor(
@@ -6,6 +7,6 @@ export class Transaction {
 		public from: string,
 		public to: string,
 		public narrative: string,
-		public amount: number
+		public amount: Decimal
 	) {}
 }

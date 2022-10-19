@@ -1,13 +1,14 @@
 import { Transaction } from "./Transaction";
+import Decimal from "decimal.js";
 
 export class UserAccount {
 	public name: string;
-	public balance: number;
+	public balance: Decimal;
 	private transactions: Transaction[];
 
 	constructor(name: string) {
 		this.name = name;
-		this.balance = 0;
+		this.balance = new Decimal(0);
 		this.transactions = [];
 	}
 
@@ -15,12 +16,12 @@ export class UserAccount {
 		return [...this.transactions];
 	}
 
-	public addBalance(number: number) {
-		this.balance += number;
+	public addBalance(number: Decimal) {
+		this.balance = this.balance.add(number);
 	}
 
-	public removeBalance(number: number) {
-		this.balance -= number;
+	public removeBalance(number: Decimal) {
+		this.balance = this.balance.sub(number);
 	}
 
 	public handleTransaction(transaction: Transaction) {

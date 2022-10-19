@@ -41,15 +41,15 @@ export class TransactionParserXML extends TransactionParser {
 	}
 
 	private createTransaction(data: XMLTransaction): Transaction {
-		const jsDate = this.fromOADate(parseInt(data.Date));
-		const date = DateTime.fromJSDate(jsDate);
+		const date = DateTime.fromJSDate(this.fromOADate(parseInt(data.Date)));
+		const amount = this.formatAmount(data.Value);
 
 		return new Transaction(
 			date,
 			data.Parties.From,
 			data.Parties.To,
 			data.Description,
-			data.Value
+			amount
 		);
 	}
 }

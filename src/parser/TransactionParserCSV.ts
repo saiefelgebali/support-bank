@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 import { parse, CastingContext } from "csv-parse/sync";
 import { TransactionParser } from "./TransactionParser";
 import { Transaction } from "../Transaction";
+import Decimal from "decimal.js";
 
 const logger = log4js.getLogger("<TransactionParserCSV.ts>");
 
@@ -16,25 +17,27 @@ export class TransactionParserCSV extends TransactionParser {
 
 		return parse(this.text, {
 			columns: true,
-			onRecord: this.createTransaction,
+			onRecord: (record, ctx) => this.createTransaction(record, ctx),
 		}) as Transaction[];
 	}
 
 	private createTransaction(
 		record: { [col: string]: string },
-		context: CastingContext
+		ctx: CastingContext
 	): Transaction {
 		const date = DateTime.fromFormat(record.Date, "dd/mm/yyyy");
-		const amount = parseFloat(record.Amount);
+		const amount = this.formatAmount(record.Amount);
 
 		if (date.invalidReason) {
 			logger.error(
-				`The date in line ${context.lines} is invalid: ${date.invalidExplanation}`
+				`The date in line ${ctx.lines} is invalid: ${date.invalidExplanation}`
 			);
 		}
 
-		if (Number.isNaN(amount)) {
-			logger.error(`The amount in line ${context.lines} is not a number`);
+		if (!Decimal.isDecimal(amount)) {
+			logger.error(
+				`The amount in line ${ctx.lines} is invalid: ${record.Amount} is not a number`
+			);
 		}
 
 		return new Transaction(

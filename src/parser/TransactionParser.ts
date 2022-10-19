@@ -1,6 +1,7 @@
 import log4js from "log4js";
 import { Transaction } from "../Transaction";
 import { UserAccount } from "../UserAccount";
+import Decimal from "decimal.js";
 
 const logger = log4js.getLogger("<TransactionParser.ts>");
 
@@ -29,4 +30,12 @@ export abstract class TransactionParser {
 	}
 
 	protected abstract parseTransactions(): Promise<Transaction[]>;
+
+	protected formatAmount(amount: string | number) {
+		if (typeof amount === "string") {
+			return new Decimal(parseFloat(amount));
+		}
+
+		return new Decimal(amount);
+	}
 }
