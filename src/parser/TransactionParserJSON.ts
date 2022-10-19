@@ -7,40 +7,40 @@ import Decimal from "decimal.js";
 const logger = log4js.getLogger("<TransactionParserJSON.ts>");
 
 export class TransactionParserJSON extends TransactionParser {
-	constructor(text: string) {
-		super(text);
-	}
+    constructor(text: string) {
+        super(text);
+    }
 
-	public override async parseTransactions() {
-		logger.log(`Parsing JSON file`);
+    public override async parseTransactions() {
+        logger.log(`Parsing JSON file`);
 
-		const data = JSON.parse(this.text) as any[];
+        const data = JSON.parse(this.text) as any[];
 
-		return data.map(this.createTransaction);
-	}
+        return data.map(this.createTransaction);
+    }
 
-	private createTransaction(data: any, i: number): Transaction {
-		const date = DateTime.fromISO(data.Date);
-		const amount = this.formatAmount(data.Amount);
+    private createTransaction(data: any, i: number): Transaction {
+        const date = DateTime.fromISO(data.Date);
+        const amount = this.formatAmount(data.Amount);
 
-		if (date.invalidReason) {
-			logger.error(
-				`The date at entry ${i} is invalid: ${date.invalidExplanation}`
-			);
-		}
+        if (date.invalidReason) {
+            logger.error(
+                `The date at entry ${i} is invalid: ${date.invalidExplanation}`
+            );
+        }
 
-		if (!Decimal.isDecimal(amount)) {
-			logger.error(
-				`The amount in entry ${i} invalid: ${data.Amount} is not a number`
-			);
-		}
+        if (!Decimal.isDecimal(amount)) {
+            logger.error(
+                `The amount in entry ${i} invalid: ${data.Amount} is not a number`
+            );
+        }
 
-		return new Transaction(
-			date,
-			data.FromAccount,
-			data.ToAccount,
-			data.Narrative,
-			amount
-		);
-	}
+        return new Transaction(
+            date,
+            data.FromAccount,
+            data.ToAccount,
+            data.Narrative,
+            amount
+        );
+    }
 }

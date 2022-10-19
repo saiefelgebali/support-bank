@@ -6,11 +6,11 @@ import "./logger";
 const logger = log4js.getLogger("<index.ts>");
 
 async function main() {
-	logger.log("Starting support bank");
-	const [filename] = getCommandLineArguments(1);
-	const bank = new SupportBank();
-	await bank.readFromFile(filename);
-	bank.start();
+    logger.log("Starting support bank");
+    const [filename] = getCommandLineArguments(1);
+    const bank = new SupportBank();
+    await bank.readFromFile(filename);
+    bank.start();
 }
 
 main();

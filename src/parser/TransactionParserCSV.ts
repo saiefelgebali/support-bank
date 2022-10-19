@@ -8,44 +8,44 @@ import Decimal from "decimal.js";
 const logger = log4js.getLogger("<TransactionParserCSV.ts>");
 
 export class TransactionParserCSV extends TransactionParser {
-	constructor(text: string) {
-		super(text);
-	}
+    constructor(text: string) {
+        super(text);
+    }
 
-	public override async parseTransactions() {
-		logger.log(`Parsing CSV file`);
+    public override async parseTransactions() {
+        logger.log(`Parsing CSV file`);
 
-		return parse(this.text, {
-			columns: true,
-			onRecord: (record, ctx) => this.createTransaction(record, ctx),
-		}) as Transaction[];
-	}
+        return parse(this.text, {
+            columns: true,
+            onRecord: (record, ctx) => this.createTransaction(record, ctx),
+        }) as Transaction[];
+    }
 
-	private createTransaction(
-		record: { [col: string]: string },
-		ctx: CastingContext
-	): Transaction {
-		const date = DateTime.fromFormat(record.Date, "dd/mm/yyyy");
-		const amount = this.formatAmount(record.Amount);
+    private createTransaction(
+        record: { [col: string]: string },
+        ctx: CastingContext
+    ): Transaction {
+        const date = DateTime.fromFormat(record.Date, "dd/mm/yyyy");
+        const amount = this.formatAmount(record.Amount);
 
-		if (date.invalidReason) {
-			logger.error(
-				`The date in line ${ctx.lines} is invalid: ${date.invalidExplanation}`
-			);
-		}
+        if (date.invalidReason) {
+            logger.error(
+                `The date in line ${ctx.lines} is invalid: ${date.invalidExplanation}`
+            );
+        }
 
-		if (!Decimal.isDecimal(amount)) {
-			logger.error(
-				`The amount in line ${ctx.lines} is invalid: ${record.Amount} is not a number`
-			);
-		}
+        if (!Decimal.isDecimal(amount)) {
+            logger.error(
+                `The amount in line ${ctx.lines} is invalid: ${record.Amount} is not a number`
+            );
+        }
 
-		return new Transaction(
-			date,
-			record.From,
-			record.To,
-			record.Narrative,
-			amount
-		);
-	}
+        return new Transaction(
+            date,
+            record.From,
+            record.To,
+            record.Narrative,
+            amount
+        );
+    }
 }
