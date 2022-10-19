@@ -4,7 +4,7 @@ import { parse, CastingContext } from "csv-parse/sync";
 import { TransactionParser } from "./TransactionParser";
 import { Transaction } from "../Transaction";
 
-const logger = log4js.getLogger("<TransactionParser.ts>");
+const logger = log4js.getLogger("<TransactionParserCSV.ts>");
 
 export class TransactionParserCSV extends TransactionParser {
 	constructor(text: string) {

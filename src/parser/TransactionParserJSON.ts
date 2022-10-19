@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 import { TransactionParser } from "./TransactionParser";
 import { Transaction } from "../Transaction";
 
-const logger = log4js.getLogger("<TransactionParser.ts>");
+const logger = log4js.getLogger("<TransactionParserJSON.ts>");
 
 export class TransactionParserJSON extends TransactionParser {
 	constructor(text: string) {
