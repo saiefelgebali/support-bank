@@ -29,13 +29,18 @@ export class SupportBank {
 		logger.log(`Parsed ${Object.keys(users).length} users`);
 		logger.log(`Parsed ${transactions.length} transactions`);
 
-		transactions.forEach((transaction) => {
-			users[transaction.from].handleTransaction(transaction);
-			users[transaction.to].handleTransaction(transaction);
-		});
-
 		this.users = users;
 		this.transactions = transactions;
+
+		this.handleTransactions();
+	}
+
+	private handleTransactions() {
+		logger.log("Applying transactions to users");
+		this.transactions.forEach((transaction) => {
+			this.users[transaction.from].handleTransaction(transaction);
+			this.users[transaction.to].handleTransaction(transaction);
+		});
 	}
 
 	private mainMenu() {
